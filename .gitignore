@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# skill-creator 评测工作区（每次迭代的 run 产物、benchmark、viewer）
+*-workspace/

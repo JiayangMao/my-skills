@@ -1,0 +1,4 @@
+[
+  {"match": "^FIREPUNCH炎拳", "title": "炎拳 {volume}", "author": "藤本樹"},
+  {"match": "^图解Skill：", "title": "{raw_title}"}
+]

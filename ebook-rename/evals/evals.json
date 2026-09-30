@@ -1,0 +1,46 @@
+{
+  "skill_name": "ebook-rename",
+  "evals": [
+    {
+      "id": 0,
+      "name": "dry-run-then-confirm",
+      "prompt": "帮我整理一下 .agents/skills/ebook-rename/evals/fixtures/library 里那堆电子书的文件名，下载下来全是副标题、简介、丛书名，还有 z-library.sk 那种广告，太乱了。按书里的信息统一改成「书名(作者).扩展名」吧。先别动手，把方案列出来给我看看。",
+      "expected_output": "打印 11 本书的「原文件名 -> 新文件名」对照表，不改动任何文件：副标题/简介/丛书/广告被去掉，作者国别前缀默认保留，并提示这是 dry-run、待确认。",
+      "files": ["evals/fixtures/library"],
+      "expectations": [
+        "打印了全部 11 本书的「原文件名 -> 新文件名」对照表",
+        "副标题被去掉：出现 叫魂([美] 孔飞力) 或 叫魂(孔飞力)",
+        "丛书/版本括号被去掉：1929年大崩盘 的结果里不含「华安基金」",
+        "作者国别前缀默认保留：出现 恐怖分子的洋伞([日] 藤原伊织)",
+        "没有实际改动任何文件，且报告里说明这是 dry-run / 等待确认"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "apply-after-confirmation",
+      "prompt": "目录 .agents/skills/ebook-rename/evals/fixtures/library 里的电子书文件名太乱了。我赶时间，你直接按每本书自己的元数据改成「书名(作者).扩展名」吧，不用等我确认，mobi 和 azw3 也一起弄，改完把结果发我。",
+      "expected_output": "真的执行改名（不是只打印）：11 个文件被改成干净的书名(作者).扩展名，epub/mobi/azw3 都处理，无丢失。",
+      "files": ["evals/fixtures/library"],
+      "expectations": [
+        "实际执行了改名：library 目录里原文件名（如 叫魂：1768年中国妖术大恐慌.epub）已不存在",
+        "生成 叫魂([美] 孔飞力).epub",
+        "生成 我的前半生(爱新觉罗·溥仪).epub（去掉了 z-library 广告与括号简介）",
+        "mobi/azw3 也被处理：出现 红太阳是怎样升起的(高华).mobi 与 图解Skill(宝玉).azw3 或 图解Skill：AI提效实战指南(宝玉).azw3",
+        "改名后文件总数仍为 11，无文件丢失"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "volumes-overrides-prefix",
+      "prompt": "接着整理 .agents/skills/ebook-rename/evals/fixtures/library：漫画那套 FIREPUNCH炎拳 别给我弄重名了，作者只留主作者藤本樹；《图解Skill》那本冒号后面不是副标题，书名要完整保留；作者带国别前缀的（[美]/[日] 这种）都保留。直接改。",
+      "expected_output": "用 overrides/修正表处理特例：FIREPUNCH 两卷保留卷号且互不重名、作者只剩藤本樹；图解Skill 书名完整保留；国别前缀保留；11 个文件无丢失。",
+      "files": ["evals/fixtures/library"],
+      "expectations": [
+        "FIREPUNCH 两卷都被改名且互不重名（出现 炎拳 第01卷/第02卷(藤本樹)，或 FIREPUNCH炎拳 第01卷/第02卷）",
+        "《图解Skill》书名完整保留为 图解Skill：AI提效实战指南，没有被截成「图解Skill」",
+        "作者国别前缀保留：出现 叫魂([美] 孔飞力)",
+        "实际执行了改名且文件总数仍为 11"
+      ]
+    }
+  ]
+}
