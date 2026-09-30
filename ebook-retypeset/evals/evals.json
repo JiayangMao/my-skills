@@ -1,0 +1,56 @@
+{
+  "skill_name": "ebook-retypeset",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我把《排版测试书》导成 epub 了，但里面的注释全混在正文里，读起来很乱，能不能整理成点一下就能弹出来的脚注？文件在 .agents/skills/ebook-retypeset/evals/fixtures/notes-flat.epub",
+      "expected_output": "生成新 EPUB，注释变成 EPUB3 弹出式脚注：正文标记为 <a epub:type=\"noteref\"> 上标链接，注释收在章末 <section epub:type=\"footnotes\"> 的 <aside epub:type=\"footnote\">，带双向链接；含注释的 XHTML 声明 xmlns:epub；包为 EPUB3。",
+      "files": [
+        ".agents/skills/ebook-retypeset/evals/fixtures/notes-flat.epub"
+      ],
+      "expectations": [
+        "输出的 EPUB 里有 4 条注释被转成 epub:type=\"footnote\"（在 <aside> 中），且每条都带回链",
+        "正文里的 4 个标记都换成了 epub:type=\"noteref\" 的上标链接",
+        "正文里不再残留未转换的圈号 ① ②",
+        "含注释的 XHTML 文档声明了 xmlns:epub 命名空间"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "这本电子书的注释被压平进正文了，有的还断成两截（比如\"脱敏治疗\"那条只剩半句），帮我转成 epub3 的弹出式脚注，注释放章末，带上回跳链接。源文件：.agents/skills/ebook-retypeset/evals/fixtures/notes-flat.epub",
+      "expected_output": "断成两截的注释被正确拼接为「降低个体焦虑反应的行为疗法」；正文里被分页拆断的句子（“她还会”+“批评她。”）也合并；4 条注释成为章末 <aside epub:type=\"footnote\">，正文标记为上标 noteref。",
+      "files": [
+        ".agents/skills/ebook-retypeset/evals/fixtures/notes-flat.epub"
+      ],
+      "expectations": [
+        "被拆断的注释已拼接：输出里出现「降低个体焦虑反应的行为疗法」",
+        "被分页拆断的正文已合并：输出里出现「她还会批评她」",
+        "输出仍是 EPUB3 弹出式脚注：4 条 noteref 链接对应 4 条 footnote"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "帮我检查一下 ~/workspace/ezbook/retypeset_out 这本书的注释格式对不对，字号、缩进、编号有没有问题，要是不对就帮我改成弹出式脚注。",
+      "expected_output": "先诊断出注释被压平在正文里（20 条注释段落 / 20 个正文标记，编号按页重复），再用 fix_notes.py 转成 EPUB3 弹出式脚注，并报告结果。",
+      "files": [],
+      "expectations": [
+        "报告里识别出该书注释被压平在正文、共 20 条（注释段落数与正文标记数一致）",
+        "最终产出的 EPUB 用 epub:type=\"noteref\" / epub:type=\"footnote\" 呈现注释（约 20 条）",
+        "产出的 OPF 是 EPUB3（version=\"3.0\"）且含 dcterms:modified"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "这本书汉字之间全是空格，把词都拆断了（\"三 年\"\"非 常\"这种），帮我把排版修一下、重新生成一本干净的 epub。文件：.agents/skills/ebook-retypeset/evals/fixtures/cjk-spaces.epub",
+      "expected_output": "回归用例：删除两侧都是汉字/全角标点的空格（“三 年”→“三年”、“同 时”→“同时”），保留拉丁词/数字与汉字之间的空格（“OK 镜”、“ICU-21 床”），并生成新的 EPUB。",
+      "files": [
+        ".agents/skills/ebook-retypeset/evals/fixtures/cjk-spaces.epub"
+      ],
+      "expectations": [
+        "汉字之间的幽灵空格被删除：「三 年」「同 时」不再出现，改为「三年」「同时」",
+        "拉丁词/数字与汉字之间的空格被保留：「OK 镜」「ICU-21 床」仍在",
+        "生成了新的 EPUB 文件（mimetype 为 application/epub+zip）"
+      ]
+    }
+  ]
+}
